@@ -1,0 +1,25 @@
+<!-- HTML code for the search form -->
+<form action="/search" method="post">
+  <label for="query">Search:</label>
+  <input type="text" id="query" name="query" required>
+  <button type="submit">Search</button>
+</form>
+
+<!-- Python code to handle the search request -->
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/search', methods=['POST'])
+def search():
+    # Get the user's search query from the form data
+    query = request.form['query']
+    
+    # Process the search query using your search algorithm
+    results = perform_search(query)
+    
+    # Return the search results as an HTML page
+    return '<html><body>' + results + '</body></html>'
+
+if __name__ == '__main__':
+    app.run()

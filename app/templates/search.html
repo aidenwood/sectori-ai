@@ -1,0 +1,48 @@
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+# This is a dummy dataset of businesses for demonstration purposes
+businesses = [
+    {'name': 'Business A', 'price': 10, 'speed': 8, 'quality': 9},
+    {'name': 'Business B', 'price': 8, 'speed': 9, 'quality': 7},
+    {'name': 'Business C', 'price': 12, 'speed': 6, 'quality': 10},
+    {'name': 'Business D', 'price': 7, 'speed': 10, 'quality': 8},
+    {'name': 'Business E', 'price': 9, 'speed': 7, 'quality': 9},
+    {'name': 'Business F', 'price': 11, 'speed': 8, 'quality': 7},
+    {'name': 'Business G', 'price': 6, 'speed': 9, 'quality': 8},
+    {'name': 'Business H', 'price': 8, 'speed': 7, 'quality': 10},
+    {'name': 'Business I', 'price': 10, 'speed': 8, 'quality': 9},
+    {'name': 'Business J', 'price': 9, 'speed': 7, 'quality': 8}
+]
+
+# Route for the search page
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        # Get the search query from the form data
+        query = request.form['query']
+        
+        # Filter the businesses based on the search query
+        results = []
+        for business in businesses:
+            if query.lower() in business['name'].lower():
+                results.append(business)
+        
+        # Sort the results based on the user's selected criteria
+        criteria = request.form.getlist('criteria')
+        if 'price' in criteria:
+            results = sorted(results, key=lambda x: x['price'])
+        elif 'speed' in criteria:
+            results = sorted(results, key=lambda x: x['speed'], reverse=True)
+        elif 'quality' in criteria:
+            results = sorted(results, key=lambda x: x['quality'], reverse=True)
+        
+        # Render the search results page
+        return render_template('results.html', query=query, results=results)
+    
+    # Render the search page
+    return render_template('search.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
